@@ -16,12 +16,12 @@ TH2D* create_TH2D(const char* name, const char* title, string xquantity, string 
 	}
 
 	//Set x axis title for plot
-	if      (xquantity == "Pt" ) hist2d->GetXaxis()->SetTitle("p_{t} [GeV/c]");
+	if      (xquantity == "Pt" ) hist2d->GetXaxis()->SetTitle("{p}t_ [GeV/c]");
 	else if (xquantity == "Eta") hist2d->GetXaxis()->SetTitle("#eta");
 	else if (xquantity == "Phi") hist2d->GetXaxis()->SetTitle("rad");
 
 	//Set y axis title for plot
-	if      (yquantity == "Pt" ) hist2d->GetYaxis()->SetTitle("p_{t} [GeV/c]");
+	if      (yquantity == "Pt" ) hist2d->GetYaxis()->SetTitle("{p}t_ [GeV/c]");
 	else if (yquantity == "Eta") hist2d->GetYaxis()->SetTitle("#eta");
 	else if (yquantity == "Phi") hist2d->GetYaxis()->SetTitle("rad");
 	

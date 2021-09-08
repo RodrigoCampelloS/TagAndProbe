@@ -3,7 +3,7 @@ TEfficiency* get_efficiency(TH1D* ALL, TH1D* PASS, string quantity, string MuonI
 {
 	//Set axis title for efficiency plot
 	ALL->GetYaxis()->SetTitle("Efficiency");
-	if      (quantity == "Pt" ) ALL->GetXaxis()->SetTitle("p_{T} [GeV/c]");
+	if      (quantity == "Pt" ) ALL->GetXaxis()->SetTitle("P_{t} [GeV/c]");
 	else if (quantity == "Eta") ALL->GetXaxis()->SetTitle("#eta");
 	else if (quantity == "Phi") ALL->GetXaxis()->SetTitle("rad");
 	
@@ -38,7 +38,7 @@ TEfficiency* get_efficiency(TH1D* ALL, TH1D* PASS, string quantity, string MuonI
 	gPad->Update();
 	auto graph = pEff->GetPaintedGraph();
 	graph->SetMinimum(0.8);
-	graph->SetMaximum(1.2);
+	graph->SetMaximum(1.05);
 	gPad->Update();
 	
 	return pEff;

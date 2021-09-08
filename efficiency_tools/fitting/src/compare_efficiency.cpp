@@ -55,15 +55,15 @@ void compare_plot(TFile *file0, TFile *file1, const char* path, string quantity)
     
     if (quantity == "Pt")
     {
-        pEff0->SetTitle("Efficiency of Tracker Probe Muon;_{p}T (GeV/c);Efficiency");
+        pEff0->SetTitle("Efficiency of tracker Probe Muon;_{p}T (GeV/c);Efficiency");
     }
     if (quantity == "Eta")
     {
-        pEff0->SetTitle("Efficiency of Tracker Probe Muon;#eta;Efficiency");
+        pEff0->SetTitle("Efficiency of tracker Probe Muon;#eta;Efficiency");
     }
     if (quantity == "Phi")
     {
-        pEff0->SetTitle("Efficiency of Tracker Probe Muon;#phi;Efficiency");
+        pEff0->SetTitle("Efficiency of tracker Probe Muon;#phi;Efficiency");
     }
 
     pEff1->SetMarkerColor(colorScheme[useScheme][1]);
@@ -79,7 +79,7 @@ void compare_plot(TFile *file0, TFile *file1, const char* path, string quantity)
 
      if (quantity == "Pt")
      {
-        pEff0->GetPaintedGraph()->GetHistogram()->GetXaxis()->SetRangeUser(0.,80.);
+        pEff0->GetPaintedGraph()->GetHistogram()->GetXaxis()->SetRangeUser(15.0,120.0);
         graph->SetMinimum(0.5);
         graph->SetMaximum(1.2);
      }
@@ -114,7 +114,7 @@ void compare_plot(TFile *file0, TFile *file1, const char* path, string quantity)
     txCOD->DrawLatex(0.14,0.85,Form("#bf{CMS Open Data}"));
 
     //Results stored in...
-    const char* directoryToSave = "Comparison Run2011 vs MC/";
+    const char* directoryToSave = "Comparison Z_Real_Data vs MC/";
 
     //Check if dir exists
     if (gSystem->AccessPathName(directoryToSave))
@@ -141,10 +141,10 @@ void compare_plot(TFile *file0, TFile *file1, const char* path, string quantity)
 }
 
 //Compare efficiency
-void compare_efficiency(string quantity, string run2011, string MC)
+void compare_efficiency(string quantity, string Z_Run, string Z_Run_MC)
 {
-    TFile *file0 = TFile::Open(run2011.c_str());
-    TFile *file1 = TFile::Open(MC.c_str());
+    TFile *file0 = TFile::Open(Z_Run.c_str());
+    TFile *file1 = TFile::Open(Z_Run_MC.c_str());
 
     if (file0 == NULL || file1 == NULL)
     {
@@ -152,5 +152,5 @@ void compare_efficiency(string quantity, string run2011, string MC)
         abort();
     }
 
-    compare_plot(file0, file1, "Efficiency", quantity);
+    compare_plot(file0, file1, "trackerMuon_Phi_Efficiency", quantity);
 }

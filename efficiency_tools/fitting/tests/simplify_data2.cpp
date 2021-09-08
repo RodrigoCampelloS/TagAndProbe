@@ -3,10 +3,10 @@
 void simplify_data2()
 {
 
-	TFile *file0  = TFile::Open("../DATA/TagAndProbe_Jpsi_MC.root");
+	TFile *file0  = TFile::Open("../DATA/Run2012B_SingleMu_Full.root");
 	TTree *TreeTA = (TTree*)file0->Get(("tagandprobe"));
 
-	TFile *fileIO = TFile::Open("../DATA/ETagAndProbe_Jpsi_MC.root","RECREATE");
+	TFile *fileIO = TFile::Open("../DATA/TagAndProbe_Z.root","RECREATE");
 	TTree *treeIO = new TTree("tagandprobe", "Tag And Probe");
 	
 	//Create variables

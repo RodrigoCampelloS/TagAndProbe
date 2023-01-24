@@ -1,11 +1,11 @@
-#include "../src/get_efficiency_TH2D.h"
-#include "../src/create_folder.h"
+#include "src/get_efficiency_TH2D.h"
+#include "src/create_folder.h"
 
-void data_mc_ratio()
+void scale_factor()
 {
-	string MuonId   = "trackerMuon";
+	//string MuonId   = "trackerMuon";
 	//string MuonId   = "standaloneMuon";
-	//string MuonId   = "globalMuon";
+	string MuonId   = "globalMuon";
 
 	//string sufix = "Nominal";Fontes de incerteza:
 	//string sufix = "Systematic";
@@ -14,8 +14,8 @@ void data_mc_ratio()
 	bool should_save = true;
 
 
-	TFile* file0 = TFile::Open(string("../results/efficiencies/systematic_2D/Z_Run/Eta_Pt_" +MuonId+".root").c_str());
-	TFile* file1 = TFile::Open(string("../results/efficiencies/systematic_2D/Z_Run_MC/Eta_Pt_"+MuonId+".root").c_str());
+	TFile* file0 = TFile::Open(string("results/efficiencies/systematic_2D/Z_Run/Eta_Pt_" +MuonId+".root").c_str());
+	TFile* file1 = TFile::Open(string("results/efficiencies/systematic_2D/Z_Run_MC/Eta_Pt_"+MuonId+".root").c_str());
 	TH2D*  hall  = (TH2D*)file0->Get(string(MuonId + "_Eta_Pt_" + sufix + "_Efficiency").c_str());
 	TH2D*  hpass = (TH2D*)file1->Get(string(MuonId + "_Eta_Pt_" + sufix + "_Efficiency").c_str());
 	//hall->Draw();
@@ -40,7 +40,7 @@ void data_mc_ratio()
 
 	if (should_save)
 	{
-		string output_folder_name = "../results/data_mc_ratio/";
+		string output_folder_name = "results/Scale_Factor/";
 		create_folder(output_folder_name.c_str());
 		c1->SaveAs(string(output_folder_name + MuonId + "_" + sufix + "_TH2D.png").c_str());
 	}

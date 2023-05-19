@@ -47,7 +47,7 @@ using namespace RooFit;
 	TCanvas* c_pass = new TCanvas;
 	
 	RooPlot *frame = InvariantMass.frame(RooFit::Title("Invariant Mass"));
-	   
+	
 	// VOIGTIAN VARIABLES
 	RooRealVar mean("mean","mean",91.1976, 90., 92.);
 	RooRealVar sigma("sigma","sigma",1.0);
@@ -67,7 +67,6 @@ using namespace RooFit;
 	double n_back_initial = 10000;
 	RooRealVar frac1("frac1","frac1",0.37);
 	RooAddPdf* signal;
-	
 	signal      = new RooAddPdf("signal", "signal", RooArgList(voitgtian, crystalball), RooArgList(frac1));
 	
 	RooRealVar n_signal_total("n_signal_total","n_signal_total",n_signal_initial_total,0.,Data_ALL->sumEntries());
@@ -111,7 +110,6 @@ using namespace RooFit;
 	green->SetLineStyle(2);
 	red->SetLineStyle(2);
 	magenta->SetLineStyle(2);
-	
 	// OUTPUT ARRAY
 	double* output = new double[4];
 	

@@ -46,8 +46,8 @@ TH2D* get_efficiency_TH2D(TH2D* hall, TH2D* hpass, string xquantity, string yqua
 	
 	if (should_save)
 	{
-	//string output_folder_name = "results/efficiencies/systematic_2D/Z_Run";
-	string output_folder_name = "results/efficiencies/systematic_2D/Z_Run_MC";
+	string output_folder_name = "results/efficiencies/systematic_2D/Z_Run";
+	//string output_folder_name = "results/efficiencies/systematic_2D/Z_Run_MC";
 	//create_folder(output_folder_name.c_str());
 	c1->SaveAs(string(output_folder_name + MuonId + "_eff_TH2D.png").c_str());
 	}

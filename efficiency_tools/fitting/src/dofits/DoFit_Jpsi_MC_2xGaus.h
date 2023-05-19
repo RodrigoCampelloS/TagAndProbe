@@ -23,10 +23,6 @@ using namespace RooFit;
 #endif
 (string condition, string MuonId, const char* savePath = NULL)
 {
-	cout << "----- Fitting data on bin -----\n";
-	cout << "Conditions: " << condition << "\n";
-	cout << "-------------------------------\n";
-
 	string MuonId_str = "";
 	if      (MuonId == "trackerMuon")    MuonId_str = "PassingProbeTrackingMuon";
 	else if (MuonId == "standaloneMuon") MuonId_str = "PassingProbeStandAloneMuon";
@@ -35,36 +31,28 @@ using namespace RooFit;
 	TFile* file0    = TFile::Open("DATA/TagAndProbe_Jpsi_MC.root");
 	TTree* DataTree = (TTree*)file0->Get(("tagandprobe"));
 	
-	RooCategory MuonId_var(MuonId_str.c_str(), MuonId_str.c_str());
-	MuonId_var.defineType("Passing", 1);
-	MuonId_var.defineType("Failing", 0);
+	RooCategory MuonId_var(MuonId_str.c_str(), MuonId_str.c_str(), {{"Passing", 1},{"Failing", 0}});
 	RooRealVar  InvariantMass("InvariantMass", "InvariantMass", _mmin, _mmax);
-	RooRealVar  ProbeMuon_Pt ("ProbeMuon_Pt",  "ProbeMuon_Pt",  0., 40.);
-	RooRealVar  ProbeMuon_Eta("ProbeMuon_Eta", "ProbeMuon_Eta", -2.4, 2.4);
-	RooRealVar  ProbeMuon_Phi("ProbeMuon_Phi", "ProbeMuon_Phi", -TMath::Pi(), TMath::Pi());
-	RooRealVar  TagMuon_Pt   ("TagMuon_Pt",    "TagMuon_Pt",    0., 40.);
-	RooRealVar  TagMuon_Eta  ("TagMuon_Eta",   "TagMuon_Eta",   -2.4, 2.4);
-	RooRealVar  TagMuon_Phi  ("TagMuon_Phi",   "TagMuon_Phi",   -TMath::Pi(), TMath::Pi());
+	RooRealVar  quantityPt   ("ProbeMuon_Pt",  "ProbeMuon_Pt",  0., 40.);
+	RooRealVar  quantityEta  ("ProbeMuon_Eta", "ProbeMuon_Eta", -2.4, 2.4);
+	RooRealVar  quantityPhi  ("ProbeMuon_Phi", "ProbeMuon_Phi", -TMath::Pi(), TMath::Pi());
 
 	if (fit_bins > 0) InvariantMass.setBins(fit_bins);
 	fit_bins = InvariantMass.getBinning().numBins();
 
-	RooFormulaVar* fv_CUT   = new RooFormulaVar("tag_cut", "TagMuon_Pt >= 7.0 && fabs(TagMuon_Eta) <= 2.4", RooArgList(TagMuon_Pt, TagMuon_Eta, TagMuon_Phi));
-	RooDataSet*    Data_CUT = new RooDataSet("data_cut", "data_cut", DataTree, RooArgSet(InvariantMass, MuonId_var, ProbeMuon_Pt, ProbeMuon_Eta, ProbeMuon_Phi), *fv_CUT);
+	RooFormulaVar* redeuce   = new RooFormulaVar("PPTM_cond", condition.c_str(), RooArgList(quantityPt, quantityEta, quantityPhi));
+	RooDataSet *Data_ALL     = new RooDataSet("DATA", "DATA", DataTree, RooArgSet(InvariantMass, MuonId_var, quantityPt, quantityEta, quantityPhi),*redeuce);
 
-	RooFormulaVar* fv_ALL   = new RooFormulaVar("probe_on_bin", condition.c_str(), RooArgList(ProbeMuon_Pt, ProbeMuon_Eta, ProbeMuon_Phi));
-	RooDataSet*    Data_ALL = new RooDataSet("data_all", "data_all", Data_CUT, RooArgSet(InvariantMass, MuonId_var, ProbeMuon_Pt, ProbeMuon_Eta, ProbeMuon_Phi), *fv_ALL);
-
-	RooFormulaVar* fv_PASS      = new RooFormulaVar("passing_probe_on_bin", (MuonId_str + "==1").c_str(), RooArgList(MuonId_var));
-	RooDataSet*    Data_PASSING = new RooDataSet("data_pass", "data_pass", Data_ALL, RooArgSet(InvariantMass, MuonId_var, ProbeMuon_Pt, ProbeMuon_Eta, ProbeMuon_Phi), *fv_PASS);
+	RooFormulaVar* cutvar    = new RooFormulaVar("PPTM_mounid", (MuonId_str + "==1").c_str(), RooArgList(MuonId_var));
+	RooDataSet *Data_PASSING = new RooDataSet("DATA_PASS", "DATA_PASS", Data_ALL, RooArgSet(InvariantMass, MuonId_var, quantityPt, quantityEta, quantityPhi), *cutvar);
 	
 	RooDataHist* dh_ALL     = new RooDataHist(Data_ALL->GetName(),    Data_ALL->GetTitle(),     RooArgSet(InvariantMass), *Data_ALL);
 	RooDataHist* dh_PASSING = new RooDataHist(Data_PASSING->GetName(),Data_PASSING->GetTitle(), RooArgSet(InvariantMass), *Data_PASSING);
 	
 	TCanvas* c_all  = new TCanvas;
 	TCanvas* c_pass = new TCanvas;
-
-	RooPlot* frame = InvariantMass.frame(RooFit::Title("Invariant Mass"));
+	
+	RooPlot *frame = InvariantMass.frame(RooFit::Title("Invariant Mass"));
 
 	//SIGNAL VARIABLES
 	RooRealVar mean("mean", "mean", 3.094, 3.07, 3.2);
@@ -159,10 +147,6 @@ using namespace RooFit;
 	// Deleting allocated memory
 	delete file0;
 
-	delete fv_CUT;
-	delete fv_ALL;
-	delete fv_PASS;
-	delete Data_CUT;
 	delete Data_ALL;
 	delete Data_PASSING;
 	delete dh_ALL;

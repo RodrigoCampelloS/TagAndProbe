@@ -118,6 +118,7 @@ void overplot_efficiencies()
 		//c1->SetLogy();
 
 	create_folder(output_folder_name);
+	c1->SaveAs(string(output_folder_name + quantity + "_" + MuonId + "_systematic_efficiency.pdf").c_str());
 
 	
 }else if(particle=="Jpsi"){
@@ -204,6 +205,6 @@ const char*  input_folder_name = "results/efficiencies/systematic_1D/Jpsi_Run_20
 		//c1->SetLogy();
 
 	create_folder(output_folder_name);
-	c1->SaveAs(string(output_folder_name + quantity + "_" + MuonId + "_systematic_efficiency.png").c_str());
+	c1->SaveAs(string(output_folder_name + quantity + "_" + MuonId + "_systematic_efficiency.pdf").c_str());
 }
 }

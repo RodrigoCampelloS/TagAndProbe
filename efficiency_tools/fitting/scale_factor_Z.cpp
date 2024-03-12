@@ -42,6 +42,6 @@ void scale_factor_Z()
 	{
 		string output_folder_name = "results/Scale_Factor/";
 		create_folder(output_folder_name.c_str());
-		c1->SaveAs(string(output_folder_name + MuonId + "_" + sufix + "_TH2D.png").c_str());
+		c1->SaveAs(string(output_folder_name + MuonId + "_" + sufix + "_TH2D.pdf").c_str());
 	}
 }

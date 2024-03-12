@@ -11,8 +11,7 @@ TH2D* create_TH2D(const char* name, const char* title, string xquantity, string 
 	else if (xquantity == "Phi") hist2d->GetXaxis()->SetTitle("rad");
 
 	//Set y axis title for plot
-	hist2d->GetYaxis()->SetDecimals();
-	hist2d->GetYaxis()->SetMaxDigits(3);
+
 	if      (yquantity == "Pt" ) hist2d->GetYaxis()->SetTitle("p_{T} [GeV/c]");
 	else if (yquantity == "Eta") hist2d->GetYaxis()->SetTitle("|#eta|");
 	else if (yquantity == "Phi") hist2d->GetYaxis()->SetTitle("rad");

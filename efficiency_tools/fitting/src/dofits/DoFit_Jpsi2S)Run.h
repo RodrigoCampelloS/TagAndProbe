@@ -4,12 +4,12 @@
 const char* output_folder_name = "Jpsi_Run_2011";
 
 //Header of this function
-double _mmin = 2.8;
-double _mmax = 3.3;
+double _mmin = 3.35;
+double _mmax = 4.05;
 double fit_bins = 0; //Let it 0 if dont want to change
 
 //Information for output at the end of run
-const char* fit_functions = "Gaussian + CrystalBall + Exponential";
+const char* fit_functions = "CrystalBall + Exponential";
 string prefix_file_name = "";
 #endif
 using namespace RooFit;
@@ -28,25 +28,21 @@ double* doFit(string condition, string MuonId, const char* savePath = NULL)
 	
 	RooCategory MuonId_var(MuonId_str.c_str(), MuonId_str.c_str(), {{"Passing", 1},{"Failing", 0}});
 	RooRealVar  InvariantMass("InvariantMass", "InvariantMass", _mmin, _mmax);
-	RooRealVar  quantityPt   ("ProbeMuon_Pt",  "ProbeMuon_Pt",  0., 40.);
-	RooRealVar  quantityEta  ("ProbeMuon_Eta", "ProbeMuon_Eta", -2.4, 2.4);
+	RooRealVar  quantityPt   ("ProbeMuon_Pt",  "ProbeMuon_Pt",  7.9, 40.);
+	RooRealVar  quantityEta  ("ProbeMuon_Eta", "ProbeMuon_Eta", -1.6, 1.6);
 	RooRealVar  quantityPhi  ("ProbeMuon_Phi", "ProbeMuon_Phi", -TMath::Pi(), TMath::Pi());
 
 	if (fit_bins > 0) InvariantMass.setBins(fit_bins);
 	fit_bins = InvariantMass.getBinning().numBins();
 
-	RooDataSet *Dataset = new RooDataSet("DATA","DATA",RooArgSet(InvariantMass, MuonId_var, quantityPt, quantityEta, quantityPhi),Import(*DataTree));
+	RooFormulaVar* redeuce   = new RooFormulaVar("PPTM_cond", condition.c_str(), RooArgList(quantityPt, quantityEta, quantityPhi));
+	RooDataSet *Data_ALL     = new RooDataSet("DATA", "DATA", DataTree, RooArgSet(InvariantMass, MuonId_var, quantityPt, quantityEta, quantityPhi),*redeuce);
 
-	RooFormulaVar* redeuce   = new RooFormulaVar("PPTM_cond",condition.c_str(), *Dataset->get());
-	RooDataSet *Data_ALL     = new RooDataSet("DATA", "DATA",Dataset, *Dataset->get(),*redeuce);
-
-
-	RooFormulaVar* cutvar    = new RooFormulaVar("PPTM_mounid", (MuonId_str + "==1").c_str(), *Data_ALL->get());
-	RooDataSet *Data_PASSING = new RooDataSet("DATA_PASS", "DATA_PASS", Data_ALL, *Data_ALL->get(), *cutvar);
+	RooFormulaVar* cutvar    = new RooFormulaVar("PPTM_mounid", (MuonId_str + "==1").c_str(), RooArgList(MuonId_var));
+	RooDataSet *Data_PASSING = new RooDataSet("DATA_PASS", "DATA_PASS", Data_ALL, RooArgSet(InvariantMass, MuonId_var, quantityPt, quantityEta, quantityPhi), *cutvar);
 	
 	RooDataHist* dh_ALL     = new RooDataHist(Data_ALL->GetName(),    Data_ALL->GetTitle(),     RooArgSet(InvariantMass), *Data_ALL);
 	RooDataHist* dh_PASSING = new RooDataHist(Data_PASSING->GetName(),Data_PASSING->GetTitle(), RooArgSet(InvariantMass), *Data_PASSING);
-
 	
 	TCanvas* c_all  = new TCanvas;
 	TCanvas* c_pass = new TCanvas;
@@ -73,7 +69,7 @@ double* doFit(string condition, string MuonId, const char* savePath = NULL)
 	
 	RooRealVar frac1("frac1","frac1",0.55);
 
-	RooAddPdf* signal = new RooAddPdf("signal", "signal", RooArgList(gaussian, crystalball), RooArgList(frac1));
+	signal = crystalball;
 	
 	RooRealVar n_signal_total("n_signal_total","n_signal_total",Data_ALL->sumEntries()/2,0.,Data_ALL->sumEntries());
 	RooRealVar n_signal_total_pass("n_signal_total_pass","n_signal_total_pass",Data_PASSING->sumEntries()/2,0.,Data_PASSING->sumEntries());

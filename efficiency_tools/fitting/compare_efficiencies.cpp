@@ -42,9 +42,9 @@ void compare_efficiencies()
 	//string MuonId   = "standaloneMuon";
 	string MuonId   = "globalMuon";
 
-	string quantity = "Pt";
+	//string quantity = "Pt";
 	//string quantity = "Eta";
-	//string quantity = "Phi";
+	string quantity = "Phi";
 
 	string file_name = quantity+"_"+MuonId+".root";
 	TEfficiency* pEffRealData	= read_TEfficiency("results/efficiencies/efficiency/Z_Run/", file_name.c_str(), string(MuonId + "_" + quantity +  "_Efficiency").c_str());

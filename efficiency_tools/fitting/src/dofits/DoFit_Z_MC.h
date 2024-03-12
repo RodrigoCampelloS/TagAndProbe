@@ -1,6 +1,5 @@
 #ifndef DOFIT_HEADER
 #define DOFIT_HEADER
-
 const char* output_folder_name = "Z_Run_MC";
 
 //Header of this function
@@ -25,23 +24,27 @@ using namespace RooFit;
 	TFile *file0       = TFile::Open("DATA/TagAndProbe_Z_MC.root");
 	TTree *DataTree    = (TTree*)file0->Get(("tagandprobe"));
 	
-	RooCategory MuonId_var(MuonId_str.c_str(), MuonId_str.c_str(), {{"Passing", 1},{"Failing", 0}});
-	RooRealVar  InvariantMass("InvariantMass", "InvariantMass", _mmin, _mmax);
-	RooRealVar  quantityPt   ("ProbeMuon_Pt",  "ProbeMuon_Pt",  15.0, 120.0);
-	RooRealVar  quantityEta  ("ProbeMuon_Eta", "ProbeMuon_Eta", -2.4, 2.4);
-	RooRealVar  quantityPhi  ("ProbeMuon_Phi", "ProbeMuon_Phi", -TMath::Pi(), TMath::Pi());
+	RooCategory MuonId_var (MuonId_str.c_str(), MuonId_str.c_str(), {{"Passing", 1},{"Failing", 0}});
+	RooRealVar  InvariantMass ("InvariantMass", "InvariantMass", _mmin, _mmax);
+	RooRealVar  quantityPt  ("ProbeMuon_Pt",  "ProbeMuon_Pt",  15.0, 120);
+	RooRealVar  quantityEta ("ProbeMuon_Eta", "ProbeMuon_Eta", -2.4, 2.4);
+	RooRealVar  quantityPhi ("ProbeMuon_Phi", "ProbeMuon_Phi", -TMath::Pi(), TMath::Pi());
 
 	if (fit_bins > 0) InvariantMass.setBins(fit_bins);
 	fit_bins = InvariantMass.getBinning().numBins();
 
-	RooFormulaVar* redeuce   = new RooFormulaVar("PPTM_cond", condition.c_str(), RooArgList(quantityPt, quantityEta, quantityPhi));
-	RooDataSet *Data_ALL     = new RooDataSet("DATA", "DATA", DataTree, RooArgSet(InvariantMass, MuonId_var, quantityPt, quantityEta, quantityPhi),*redeuce);
+	RooDataSet *Dataset = new RooDataSet("DATA","DATA",RooArgSet(InvariantMass, MuonId_var, quantityPt, quantityEta, quantityPhi),Import(*DataTree));
 
-	RooFormulaVar* cutvar    = new RooFormulaVar("PPTM_mounid", (MuonId_str + "==1").c_str(), RooArgList(MuonId_var));
-	RooDataSet *Data_PASSING = new RooDataSet("DATA_PASS", "DATA_PASS", Data_ALL, RooArgSet(InvariantMass, MuonId_var, quantityPt, quantityEta, quantityPhi), *cutvar);
+	RooFormulaVar* redeuce   = new RooFormulaVar("PPTM_cond",condition.c_str(), *Dataset->get());
+	RooDataSet *Data_ALL     = new RooDataSet("DATA", "DATA",Dataset, *Dataset->get(),*redeuce);
+
+
+	RooFormulaVar* cutvar    = new RooFormulaVar("PPTM_mounid", (MuonId_str + "==1").c_str(), *Data_ALL->get());
+	RooDataSet *Data_PASSING = new RooDataSet("DATA_PASS", "DATA_PASS", Data_ALL, *Data_ALL->get(), *cutvar);
 	
 	RooDataHist* dh_ALL     = new RooDataHist(Data_ALL->GetName(),    Data_ALL->GetTitle(),     RooArgSet(InvariantMass), *Data_ALL);
 	RooDataHist* dh_PASSING = new RooDataHist(Data_PASSING->GetName(),Data_PASSING->GetTitle(), RooArgSet(InvariantMass), *Data_PASSING);
+
 	
 	TCanvas* c_all  = new TCanvas;
 	TCanvas* c_pass = new TCanvas;
@@ -142,7 +145,7 @@ using namespace RooFit;
 	leg->AddEntry(blue,"Total Fit","l");
 	leg->AddEntry(green,"Signal","l");
 	leg->AddEntry(orange,"Voitgtian","l");
-	leg->AddEntry(magenta,"Crystalball","l");
+	leg->AddEntry(magenta,"Crystal ball","l");
 	leg->AddEntry(red,"Background","l");
 	leg->Draw();
 

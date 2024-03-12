@@ -35,14 +35,18 @@ double* doFit(string condition, string MuonId, const char* savePath = NULL)
 	if (fit_bins > 0) InvariantMass.setBins(fit_bins);
 	fit_bins = InvariantMass.getBinning().numBins();
 
-	RooFormulaVar* redeuce   = new RooFormulaVar("PPTM_cond", condition.c_str(), RooArgList(quantityPt, quantityEta, quantityPhi));
-	RooDataSet *Data_ALL     = new RooDataSet("DATA", "DATA", DataTree, RooArgSet(InvariantMass, MuonId_var, quantityPt, quantityEta, quantityPhi),*redeuce);
+	RooDataSet *Dataset = new RooDataSet("DATA","DATA",RooArgSet(InvariantMass, MuonId_var, quantityPt, quantityEta, quantityPhi),Import(*DataTree));
 
-	RooFormulaVar* cutvar    = new RooFormulaVar("PPTM_mounid", (MuonId_str + "==1").c_str(), RooArgList(MuonId_var));
-	RooDataSet *Data_PASSING = new RooDataSet("DATA_PASS", "DATA_PASS", Data_ALL, RooArgSet(InvariantMass, MuonId_var, quantityPt, quantityEta, quantityPhi), *cutvar);
+	RooFormulaVar* redeuce   = new RooFormulaVar("PPTM_cond",condition.c_str(), *Dataset->get());
+	RooDataSet *Data_ALL     = new RooDataSet("DATA", "DATA",Dataset, *Dataset->get(),*redeuce);
+
+
+	RooFormulaVar* cutvar    = new RooFormulaVar("PPTM_mounid", (MuonId_str + "==1").c_str(), *Data_ALL->get());
+	RooDataSet *Data_PASSING = new RooDataSet("DATA_PASS", "DATA_PASS", Data_ALL, *Data_ALL->get(), *cutvar);
 	
 	RooDataHist* dh_ALL     = new RooDataHist(Data_ALL->GetName(),    Data_ALL->GetTitle(),     RooArgSet(InvariantMass), *Data_ALL);
 	RooDataHist* dh_PASSING = new RooDataHist(Data_PASSING->GetName(),Data_PASSING->GetTitle(), RooArgSet(InvariantMass), *Data_PASSING);
+
 	
 	TCanvas* c_all  = new TCanvas;
 	TCanvas* c_pass = new TCanvas;

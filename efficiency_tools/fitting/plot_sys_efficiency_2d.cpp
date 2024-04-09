@@ -2,11 +2,11 @@
 //#include "src/dofits/DoFit_Jpsi_Run.h"
 
 
-//#include "src/dofits/DoFit_Z.h"
-//#include "src/dofits/DoFit_Z_Run_2xVoigtian.h"
+#include "src/dofits/DoFit_Z.h"
+#include "src/dofits/DoFit_Z_Run_2xVoigtian.h"
 
-#include "src/dofits/DoFit_Z_MC.h"
-#include "src/dofits/DoFit_Z_MC_2xVoigtian.h"
+//#include "src/dofits/DoFit_Z_MC.h"
+//#include "src/dofits/DoFit_Z_MC_2xVoigtian.h"
 #include "src/dofits/DoFit_Jpsi_Run_2xGaus.h"
 //#include "src/dofits/DoFit_Jpsi_MC.h"
 //#include "src/dofits/DoFit_Jpsi_MC_2xGaus.h"

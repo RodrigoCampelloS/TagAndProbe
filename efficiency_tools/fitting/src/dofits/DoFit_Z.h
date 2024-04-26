@@ -183,6 +183,7 @@ using namespace RooFit;
 	//
 	delete cutvar;
 	delete redeuce;
+	delete Dataset;
 	//
 	//delete signal;
 	//

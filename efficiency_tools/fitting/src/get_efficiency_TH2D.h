@@ -1,3 +1,10 @@
+double roundToTwoDecimalPlaces(double value) {
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision(3) << value;
+    std::string formattedValueStr = oss.str();
+    
+    return std::stod(formattedValueStr); // Convert the formatted string to double and return
+}
 
 TH2D* get_efficiency_TH2D(TH2D* hall, TH2D* hpass, string xquantity, string yquantity, string MuonId, string prefix_name = "")
 {
@@ -15,8 +22,8 @@ TH2D* get_efficiency_TH2D(TH2D* hall, TH2D* hpass, string xquantity, string yqua
 
 			double value     = val_pass/val_all;
 			double uncertain = fabs(value)*sqrt(pow(unc_pass/val_pass, 2) + pow(unc_all/val_all, 2));
-			value = std::round(value * 1000.0) / 1000.0;	
-			uncertain = std::round(uncertain * 1000.0) / 1000.0;
+			value = roundToTwoDecimalPlaces(value);
+			uncertain = roundToTwoDecimalPlaces(uncertain);
 			heff->SetBinContent(i,j, value);
 			heff->SetBinError(i,j, uncertain);
 		}

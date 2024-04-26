@@ -206,7 +206,9 @@ using namespace RooFit;
 	delete Data_PASSING;
 	delete dh_ALL;
 	delete dh_PASSING;
-
+	delete cutvar;
+	delete redeuce;
+	delete Dataset;
 	delete c_all;
 	delete c_pass;
 

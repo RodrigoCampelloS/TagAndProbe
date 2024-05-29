@@ -52,14 +52,33 @@ void plot_sys_efficiency_2d()
 {
 	if(particle =="Z"){
 	//Path where is going to save fit results png for every bin 
+	
+	//If you are doing Real data, uncomment this lines
+	
+	
+	
 	string path_bins_fit_folder = string("results/bins_fit/systematic_2D/") + output_folder_name + "/"+ MuonId + "/";
 	create_folder(path_bins_fit_folder.c_str(), true);
-
-
 	//Path where is going to save the efficiency results
 	string directoryToSave = string("results/efficiencies/systematic_2D/") + output_folder_name + "/";
 	create_folder(directoryToSave.c_str());
-
+	
+	
+	
+	//If you are doing MC data, uncomment this lines
+	
+	
+	/*
+	
+	string path_bins_fit_folder = string("results/bins_fit/systematic_2D_MC/") + output_folder_name + "/"+ MuonId + "/";
+	create_folder(path_bins_fit_folder.c_str(), true);
+	//Path where is going to save the efficiency results
+	string directoryToSave = string("results/efficiencies/systematic_2D_MC/") + output_folder_name + "/";
+	create_folder(directoryToSave.c_str());
+	
+	*/
+	
+	
 	//Get number of bins
 	const int nbinsy = sizeof(ybins)/sizeof(*ybins) - 1;
 	const int nbinsx = sizeof(xbins)/sizeof(*xbins) - 1;
